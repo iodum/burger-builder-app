@@ -10,8 +10,7 @@
     margin-bottom: 8px;
 }
 
-.InputElement,
-.TextareaElement {
+.InputElement{
     display: block;
     width: 100%;
     outline: none;
@@ -20,14 +19,15 @@
     font: inherit;
     padding: 6px 10px;
     box-sizing: border-box;
+    resize: none;
 }
 
-.InputElement:focus,
-.TextareaElement:focus {
+.InputElement:focus {
     outline: none;
     background: #ccc;
 }
 
-.TextareaElement {
-    resize: none;
+.Invalid {
+    border-color: red;
+    background: salmon;
 }
