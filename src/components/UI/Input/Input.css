@@ -28,6 +28,12 @@
 }
 
 .Invalid {
-    border-color: red;
-    background: salmon;
+    border-color: #f00;
+    background: #fcaea5;
+}
+
+.Error {
+    margin: 5px 0 0;
+    font-size: 0.8em;
+    color: #c00;
 }
