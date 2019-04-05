@@ -78,3 +78,22 @@ export const fetchOrders = () => {
            });
     }
 }
+
+export const removeOrderSuccess = (id) => {
+    return {
+        type: actionTypes.REMOVE_ORDER,
+        id: id
+    }
+}
+export const removeOrder = (id) => {
+    return dispatch => {
+        dispatch(fetchOrdersStart());
+        axios.delete('/orders/' + id + '.json')
+           .then(res => {
+               dispatch(removeOrderSuccess(id));
+           })
+           .catch(error => {
+               dispatch(fetchOrdersFail(error));
+           });
+    }
+}
