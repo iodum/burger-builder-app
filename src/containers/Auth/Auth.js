@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
@@ -41,6 +42,12 @@ class Auth extends Component {
         },
         formIsValid: false,
         isSignUp: true
+    }
+
+    componentDidMount() {
+        if ( !this.props.building && this.props.authRedirect !== '/') {
+            this.props.onSetAuthRedirectPath();
+        }
     }
 
     checkValidity(value, rules) {
@@ -133,8 +140,14 @@ class Auth extends Component {
             );
         }
 
+        let authRedirect = null;
+        if ( this.props.isAuth ) {
+            authRedirect = <Redirect to={this.props.authRedirect} />;
+        }
+
         return (
             <div className={classes.Auth}>
+                { authRedirect }
                 {errorMessage}
                 <form onSubmit={this.submitHandler}>
                     { form }
@@ -148,12 +161,16 @@ class Auth extends Component {
 const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
-        error: state.auth.error
+        error: state.auth.error,
+        isAuth: state.auth.token !== null,
+        building: state.burgerBuilder.building,
+        authRedirect: state.auth.authRedirect
     }
 }
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: (email, pass, isSignUp) => {dispatch(actions.auth(email, pass, isSignUp))}
+        onAuth: (email, pass, isSignUp) => dispatch(actions.auth(email, pass, isSignUp)),
+        onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
     }
 }
 
