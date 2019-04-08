@@ -30,17 +30,15 @@ export const auth = (email, password, isSignUp) => {
             password: password,
             returnSecureToken: true
         }
-        let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyC64yXnSaCOACXk1ssh7XGQeBS-6rSzrXc';
+        let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' + process.env.REACT_APP_FIREBASE_KEYREACT_APP_FIREBASE_KEY;
         if ( !isSignUp ) {
-            url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyC64yXnSaCOACXk1ssh7XGQeBS-6rSzrXc';
+            url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + process.env.REACT_APP_FIREBASE_KEY;
         }
         axios.post(url, authData)
             .then(res => {
-                console.log(res);
                 dispatch(authSuccess(res.data.idToken, res.data.localId));
             })
             .catch(err => {
-                console.log(err);
                 dispatch(authFail(err.response.data.error));
             });
     }
