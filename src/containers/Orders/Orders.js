@@ -24,7 +24,7 @@ class Orders extends Component {
                             key={order.id}
                             ingredients={order.ingredients}
                             price={order.price}
-                            removed={() => this.props.onOrderRemove(order.id)} />
+                            removed={() => this.props.onOrderRemove(order.id, this.props.token)} />
                     ))}
                 </div>
             );
@@ -45,7 +45,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchOrders: (token,userId) => dispatch(actions.fetchOrders(token,userId)),
-        onOrderRemove: (id) => dispatch(actions.removeOrder(id))
+        onOrderRemove: (id, token) => dispatch(actions.removeOrder(id, token))
     }
 }
 

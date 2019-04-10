@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios-orders';
 
 export const purchaseBurgerSuccess = (id, orderData) => {
     return {
@@ -22,15 +21,10 @@ export const purchaseBurgerStart = () => {
 }
 
 export const purchaseBurger = (orderData, token) => {
-    return dispatch => {
-        dispatch(purchaseBurgerStart());
-        axios.post('/orders.json?auth=' + token, orderData)
-           .then(response => {
-               dispatch(purchaseBurgerSuccess(response.data.name, orderData));
-           })
-           .catch(error => {
-               dispatch(purchaseBurgerFail(error));
-           });
+    return {
+        type: actionTypes.PURCHASE_BURGER,
+        token: token,
+        orderData: orderData
     }
 }
 
@@ -60,41 +54,23 @@ export const fetchOrdersStart = () => {
 }
 
 export const fetchOrders = (token, userId) => {
-    return dispatch => {
-        dispatch(fetchOrdersStart());
-        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
-        axios.get('/orders.json' + queryParams )
-           .then(res => {
-               const fetchOrders = [];
-               for (let key in res.data) {
-                   fetchOrders.push({
-                       ...res.data[key],
-                       id: key
-                   });
-               }
-               dispatch(fetchOrdersSuccess(fetchOrders));
-           })
-           .catch(error => {
-               dispatch(fetchOrdersFail(error));
-           });
+    return {
+        type: actionTypes.FETCH_ORDERS,
+        token: token,
+        userId: userId
     }
 }
 
 export const removeOrderSuccess = (id) => {
     return {
-        type: actionTypes.REMOVE_ORDER,
+        type: actionTypes.REMOVE_ORDER_SUCCESS,
         id: id
     }
 }
-export const removeOrder = (id) => {
-    return dispatch => {
-        dispatch(fetchOrdersStart());
-        axios.delete('/orders/' + id + '.json')
-           .then(res => {
-               dispatch(removeOrderSuccess(id));
-           })
-           .catch(error => {
-               dispatch(fetchOrdersFail(error));
-           });
+export const removeOrder = (id, token) => {
+    return {
+        type: actionTypes.REMOVE_ORDER,
+        id: id,
+        token: token
     }
 }
