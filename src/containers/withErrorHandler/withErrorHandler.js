@@ -1,42 +1,43 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Modal from '../../components/UI/Modal/Modal';
 
 const withErrorHandler = ( WrappedComponet, axios ) => {
-    return class extends Component {
-        state = {
-            error: null
+    return props => {
+        const [error, setError] = useState(null);
+
+        const reqInterceptor = axios.interceptors.request.use(request => {
+            setError(null);
+            return request
+        });
+        const resInterceptor = axios.interceptors.response.use(res => res, err => {
+            setError(err);
+        });
+
+        const errorConfirmHandler = () => {
+            setError(null);
         }
 
-        constructor(props) {
-            super(props);
-            axios.interceptors.request.use(request => {
-                this.setState({error: null});
-                return request
-            });
-            axios.interceptors.response.use(res => res, error => {
-                this.setState({error: error});
-            });
+        let modal = null;
+        if ( error ) {
+            modal = <Modal
+                show={error}
+                modalClosed={errorConfirmHandler}>
+                { error ? error.message : null }</Modal>;
         }
 
-        errorConfirmHandler = () => {
-            this.setState({error: null});
-        }
-
-        render () {
-            let modal = null;
-            if ( this.state.error ) {
-                modal = <Modal
-                    show={this.state.error}
-                    modalClosed={this.errorConfirmHandler}>
-                    { this.state.error ? this.state.error.message : null }</Modal>;
+        useEffect(() => {
+            return () => {
+                axios.interceptors.request.eject( reqInterceptor );
+                axios.interceptors.response.eject( resInterceptor );
             }
-            return (
-                <Fragment>
-                    {modal}
-                    <WrappedComponet {...this.props} />
-                </Fragment>
-            )
-        }
+        }, [reqInterceptor, resInterceptor]);
+
+        return (
+            <Fragment>
+                {modal}
+                <WrappedComponet {...props} />
+            </Fragment>
+        )
     }
 }
 
